@@ -1,0 +1,8 @@
+[package]
+name = "vynapse-math"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+vynapse-core = { path = "../vynapse-core" }
+num-traits = "0.2.19"

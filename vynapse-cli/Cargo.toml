@@ -1,0 +1,9 @@
+[package]
+name = "vynapse-cli"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+vynapse-core = { path = "../vynapse-core" }
+vynapse-math = { path = "../vynapse-math" }
+clap = "4.5.41"
