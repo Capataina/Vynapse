@@ -34,4 +34,14 @@ impl<T> Tensor<T> {
 
         strides
     }
+
+    pub fn get(&self, indices: &[usize]) -> Result<&T> {
+        if self.shape.rank() < indices.len() {
+            return Err(vynapse_core::VynapseError::TensorError(
+                "The entered shape is too big.".to_string(),
+            ));
+        }
+
+        todo!()
+    }
 }
