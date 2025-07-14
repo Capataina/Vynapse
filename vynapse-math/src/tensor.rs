@@ -2,6 +2,7 @@ use vynapse_core::{Result, VynapseError};
 
 use crate::Shape;
 
+#[derive(Debug)]
 pub struct Tensor<T> {
     pub data: Vec<T>,
     pub shape: Shape,

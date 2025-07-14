@@ -2,6 +2,7 @@ use vynapse_core::{Result, VynapseError};
 
 use std::fmt;
 
+#[derive(Debug, Clone)]
 pub struct Shape {
     pub dims: Vec<usize>,
 }

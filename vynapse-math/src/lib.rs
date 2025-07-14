@@ -1,3 +1,4 @@
+pub mod ops;
 pub mod shape;
 pub mod tensor;
 
