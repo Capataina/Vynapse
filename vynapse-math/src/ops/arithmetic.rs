@@ -3,7 +3,7 @@ use std::ops::Add;
 use num_traits::Zero;
 use vynapse_core::Result;
 
-use crate::{Shape, Tensor, shape};
+use crate::Tensor;
 
 pub fn tensor_add<T>(tensor_one: &Tensor<T>, tensor_two: &Tensor<T>) -> Result<Tensor<T>>
 where
@@ -25,6 +25,7 @@ where
 }
 
 #[cfg(test)]
+use crate::Shape;
 #[test]
 fn two_1d_tensors() {
     let tensor1_array = vec![1.0, 2.0];
