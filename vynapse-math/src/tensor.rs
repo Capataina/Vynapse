@@ -2,7 +2,7 @@ use vynapse_common::{Result, VynapseError};
 
 use crate::Shape;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Tensor<T> {
     pub data: Vec<T>,
     pub shape: Shape,
@@ -161,5 +161,15 @@ impl<T> Tensor<T> {
         T: Clone,
     {
         self.data.fill(value);
+    }
+}
+
+impl Tensor<f32> {
+    pub fn apply_sigmoid(&self) -> Result<Tensor<f32>> {
+        let mut new_tensor = self.clone();
+        for x in &mut new_tensor.data {
+            *x = 1.0 / (1.0 + (-*x).exp());
+        }
+        Ok(new_tensor)
     }
 }
