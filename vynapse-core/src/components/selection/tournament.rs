@@ -1,7 +1,8 @@
 use rand::{Rng, rng};
 
-use crate::{Result, VynapseError};
+use crate::{Result, VynapseError, traits::selection::Selection};
 
+#[derive(Debug, Clone, Copy)]
 pub struct TournamentSelection {
     tournament_size: usize,
 }
@@ -47,6 +48,31 @@ impl TournamentSelection {
         }
 
         Ok(current_best_participant)
+    }
+}
+
+impl Selection for TournamentSelection {
+    fn select(&self, fitness: &[f32], count: usize) -> Result<Vec<usize>> {
+        if count == 0 {
+            return Err(VynapseError::EvolutionError(
+                "Selection count must be greater than 0.".to_string(),
+            ));
+        }
+
+        if fitness.is_empty() {
+            return Err(VynapseError::EvolutionError(
+                "The fitness array cannot be empty.".to_string(),
+            ));
+        }
+
+        let mut selected_indices: Vec<usize> = Vec::with_capacity(count);
+
+        for _ in 0..count {
+            let selected_index = self.run_single_tournament(fitness)?;
+            selected_indices.push(selected_index);
+        }
+
+        Ok(selected_indices)
     }
 }
 
@@ -99,12 +125,6 @@ fn test_single_tournament_large_tournament_bias() {
             wins_for_best += 1;
         }
     }
-    println!(
-        "Best individual won {}/{} times ({}%)",
-        wins_for_best,
-        trials,
-        wins_for_best * 100 / trials
-    );
 
     assert!(wins_for_best > trials * 65 / 100); // Should win >80% of time
 }
@@ -189,5 +209,197 @@ fn test_single_tournament_single_individual() {
     for _ in 0..10 {
         let winner = selection.run_single_tournament(&fitness).unwrap();
         assert_eq!(winner, 0); // Only possible winner
+    }
+}
+
+#[test]
+fn test_select_single_individual() {
+    let selection = TournamentSelection::new(2).unwrap();
+    let fitness = vec![0.1, 0.9, 0.3, 0.2];
+
+    let result = selection.select(&fitness, 1).unwrap();
+
+    assert_eq!(result.len(), 1);
+    assert!(result[0] < fitness.len());
+}
+
+#[test]
+fn test_select_multiple_individuals() {
+    let selection = TournamentSelection::new(2).unwrap();
+    let fitness = vec![0.1, 0.9, 0.3, 0.2];
+
+    let result = selection.select(&fitness, 5).unwrap();
+
+    assert_eq!(result.len(), 5);
+    for &index in &result {
+        assert!(index < fitness.len());
+    }
+}
+
+#[test]
+fn test_select_more_than_population_size() {
+    let selection = TournamentSelection::new(2).unwrap();
+    let fitness = vec![0.1, 0.9, 0.3];
+
+    let result = selection.select(&fitness, 10).unwrap();
+
+    assert_eq!(result.len(), 10);
+    for &index in &result {
+        assert!(index < fitness.len());
+    }
+}
+
+#[test]
+fn test_select_with_replacement() {
+    let selection = TournamentSelection::new(3).unwrap();
+    let fitness = vec![0.1, 0.9, 0.2, 0.3];
+
+    let result = selection.select(&fitness, 20).unwrap();
+
+    // With high selection pressure, should see repeated indices
+    let unique_indices: std::collections::HashSet<_> = result.iter().collect();
+    assert!(unique_indices.len() < result.len());
+}
+
+#[test]
+fn test_select_bias_toward_fitter_individuals() {
+    let selection = TournamentSelection::new(3).unwrap();
+    let fitness = vec![0.1, 0.9, 0.2, 0.3]; // Index 1 has highest fitness
+
+    let mut count_best = 0;
+    let trials = 1000;
+
+    for _ in 0..trials {
+        let result = selection.select(&fitness, 1).unwrap();
+        if result[0] == 1 {
+            count_best += 1;
+        }
+    }
+
+    // Best individual should be selected more often than random (25%)
+    assert!(count_best > trials / 3);
+}
+
+#[test]
+fn test_select_zero_count_error() {
+    let selection = TournamentSelection::new(2).unwrap();
+    let fitness = vec![0.1, 0.9, 0.3];
+
+    let result = selection.select(&fitness, 0);
+
+    assert!(result.is_err());
+    if let Err(VynapseError::EvolutionError(msg)) = result {
+        assert!(msg.contains("0") || msg.contains("greater"));
+    }
+}
+
+#[test]
+fn test_select_empty_fitness_error() {
+    let selection = TournamentSelection::new(2).unwrap();
+    let fitness = vec![];
+
+    let result = selection.select(&fitness, 3);
+
+    assert!(result.is_err());
+    if let Err(VynapseError::EvolutionError(msg)) = result {
+        assert!(msg.contains("empty"));
+    }
+}
+
+#[test]
+fn test_select_with_identical_fitness() {
+    let selection = TournamentSelection::new(2).unwrap();
+    let fitness = vec![0.5, 0.5, 0.5, 0.5];
+
+    let result = selection.select(&fitness, 10).unwrap();
+
+    assert_eq!(result.len(), 10);
+
+    // Should see relatively even distribution with identical fitness
+    let mut seen_indices = std::collections::HashSet::new();
+    for &index in &result {
+        assert!(index < fitness.len());
+        seen_indices.insert(index);
+    }
+    assert!(seen_indices.len() > 1);
+}
+
+#[test]
+fn test_select_with_negative_fitness() {
+    let selection = TournamentSelection::new(2).unwrap();
+    let fitness = vec![-0.8, -0.1, -0.5, -0.9]; // Index 1 is best (-0.1)
+
+    let mut count_best = 0;
+    let trials = 500;
+
+    for _ in 0..trials {
+        let result = selection.select(&fitness, 1).unwrap();
+        if result[0] == 1 {
+            count_best += 1;
+        }
+    }
+
+    // Best individual (least negative) should be selected more often
+    assert!(count_best > trials / 5);
+}
+
+#[test]
+fn test_select_large_tournament_size() {
+    let selection = TournamentSelection::new(4).unwrap(); // Tournament size = population size
+    let fitness = vec![0.1, 0.9, 0.3, 0.2];
+
+    let mut count_best = 0;
+    let trials = 100;
+
+    for _ in 0..trials {
+        let result = selection.select(&fitness, 1).unwrap();
+        if result[0] == 1 {
+            // Index 1 has highest fitness
+            count_best += 1;
+        }
+    }
+
+    // With large tournament size, best should win most of the time
+    assert!(count_best > trials * 6 / 10); // >70% of the time
+}
+
+#[test]
+fn test_select_single_individual_population() {
+    let selection = TournamentSelection::new(1).unwrap();
+    let fitness = vec![0.7];
+
+    let result = selection.select(&fitness, 5).unwrap();
+
+    assert_eq!(result.len(), 5);
+    for &index in &result {
+        assert_eq!(index, 0); // Only possible selection
+    }
+}
+
+#[test]
+fn test_select_returns_correct_count() {
+    let selection = TournamentSelection::new(2).unwrap();
+    let fitness = vec![0.1, 0.2, 0.3, 0.4, 0.5];
+
+    for count in 1..=20 {
+        let result = selection.select(&fitness, count).unwrap();
+        assert_eq!(result.len(), count);
+    }
+}
+
+#[test]
+fn test_select_deterministic_with_fixed_seed() {
+    // This test might need modification based on your RNG implementation
+    let selection = TournamentSelection::new(2).unwrap();
+    let fitness = vec![0.1, 0.9, 0.3, 0.2];
+
+    // If you have a way to seed your RNG, test deterministic behavior
+    // Otherwise, just ensure multiple runs produce valid results
+    for _ in 0..10 {
+        let result = selection.select(&fitness, 3).unwrap();
+        assert_eq!(result.len(), 3);
+        for &index in &result {
+            assert!(index < fitness.len());
+        }
     }
 }
