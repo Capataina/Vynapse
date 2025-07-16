@@ -1,4 +1,4 @@
-use vynapse_core::{Result, VynapseError};
+use vynapse_common::{Result, VynapseError};
 
 use std::fmt;
 

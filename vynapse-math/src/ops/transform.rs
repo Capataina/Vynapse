@@ -1,5 +1,5 @@
 use num_traits::Zero;
-use vynapse_core::{Result, VynapseError};
+use vynapse_common::{Result, VynapseError};
 
 use crate::{Shape, Tensor};
 
@@ -175,7 +175,7 @@ fn transpose_1d_tensor_error() {
     let result = transpose_2d(&tensor);
     assert!(result.is_err());
 
-    if let Err(vynapse_core::VynapseError::TensorError(msg)) = result {
+    if let Err(VynapseError::TensorError(msg)) = result {
         assert!(msg.contains("rank") || msg.contains("2") || msg.contains("dimension"));
     } else {
         panic!("Expected TensorError for 1D tensor");
@@ -191,7 +191,7 @@ fn transpose_3d_tensor_error() {
     let result = transpose_2d(&tensor);
     assert!(result.is_err());
 
-    if let Err(vynapse_core::VynapseError::TensorError(msg)) = result {
+    if let Err(VynapseError::TensorError(msg)) = result {
         assert!(msg.contains("rank") || msg.contains("2") || msg.contains("dimension"));
     } else {
         panic!("Expected TensorError for 3D tensor");
@@ -410,7 +410,7 @@ fn reshape_mismatched_total_elements() {
     let result = reshape_tensor(&tensor, new_shape);
 
     assert!(result.is_err());
-    if let Err(vynapse_core::VynapseError::TensorError(msg)) = result {
+    if let Err(VynapseError::TensorError(msg)) = result {
         assert!(msg.contains("elements") || msg.contains("match") || msg.contains("total"));
     } else {
         panic!("Expected TensorError for mismatched element count");
@@ -427,7 +427,7 @@ fn reshape_larger_mismatch() {
     let result = reshape_tensor(&tensor, new_shape);
 
     assert!(result.is_err());
-    if let Err(vynapse_core::VynapseError::TensorError(msg)) = result {
+    if let Err(VynapseError::TensorError(msg)) = result {
         assert!(msg.contains("elements") || msg.contains("match") || msg.contains("total"));
     } else {
         panic!("Expected TensorError for mismatched element count");

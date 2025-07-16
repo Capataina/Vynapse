@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use crate::Result;
+use vynapse_common::Result;
 
 pub trait Genome: Clone + Debug {
     fn get_weights(&self) -> Vec<f32>;

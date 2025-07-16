@@ -283,12 +283,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "vynapse-common"
+version = "0.1.0"
+dependencies = [
+ "thiserror",
+]
+
+[[package]]
 name = "vynapse-core"
 version = "0.1.0"
 dependencies = [
  "rand",
  "serde",
  "thiserror",
+ "vynapse-common",
+ "vynapse-math",
 ]
 
 [[package]]
@@ -296,7 +305,7 @@ name = "vynapse-math"
 version = "0.1.0"
 dependencies = [
  "num-traits",
- "vynapse-core",
+ "vynapse-common",
 ]
 
 [[package]]

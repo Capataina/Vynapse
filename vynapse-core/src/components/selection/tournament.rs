@@ -1,6 +1,7 @@
 use rand::{Rng, rng};
 
-use crate::{Result, VynapseError, traits::selection::Selection};
+use crate::traits::selection::Selection;
+use vynapse_common::{Result, VynapseError};
 
 #[derive(Debug, Clone, Copy)]
 pub struct TournamentSelection {

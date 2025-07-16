@@ -1,6 +1,7 @@
 use rand::{Rng, random_bool, random_ratio, rng};
 
-use crate::{VynapseError, traits::genome::Genome};
+use crate::traits::genome::Genome;
+use vynapse_common::{Result, VynapseError};
 
 #[derive(Clone, Debug)]
 pub struct FixedTopologyGenome {
@@ -43,7 +44,7 @@ impl Genome for FixedTopologyGenome {
         self.weights.clone()
     }
 
-    fn set_weights(&mut self, weights: Vec<f32>) -> crate::Result<()> {
+    fn set_weights(&mut self, weights: Vec<f32>) -> Result<()> {
         if self.weights.len() != weights.len() {
             return Err(VynapseError::EvolutionError(
                 "Given weight's length doesn't match the genome's weight's length.".to_string(),
@@ -54,7 +55,7 @@ impl Genome for FixedTopologyGenome {
         Ok(())
     }
 
-    fn mutate(&mut self, mutation_rate: f32) -> crate::Result<()> {
+    fn mutate(&mut self, mutation_rate: f32) -> Result<()> {
         if !(0.0..=1.0).contains(&mutation_rate) {
             return Err(VynapseError::EvolutionError(
                 "Mutation rate has to be between 0% and 100% (0.0 - 1.0).".to_string(),
@@ -72,7 +73,7 @@ impl Genome for FixedTopologyGenome {
         Ok(())
     }
 
-    fn crossover(&self, other: &Self) -> crate::Result<Self> {
+    fn crossover(&self, other: &Self) -> Result<Self> {
         if self.shape != other.shape {
             return Err(VynapseError::EvolutionError(
                 "The shapes of the genomes don't match for the crossover.".to_string(),

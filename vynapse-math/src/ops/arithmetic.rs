@@ -1,7 +1,7 @@
 use std::ops::{Add, Div, Mul, Sub};
 
 use num_traits::Zero;
-use vynapse_core::Result;
+use vynapse_common::{Result, VynapseError};
 
 use crate::Tensor;
 
@@ -10,7 +10,7 @@ where
     T: Clone + Default + Add<T, Output = T> + Zero,
 {
     if tensor_one.shape.dims != tensor_two.shape.dims {
-        return Err(vynapse_core::VynapseError::TensorError(
+        return Err(VynapseError::TensorError(
             "Given tensors have different shapes.".to_string(),
         ));
     }
@@ -29,7 +29,7 @@ where
     T: Clone + Default + Sub<T, Output = T> + Zero,
 {
     if tensor_one.shape.dims != tensor_two.shape.dims {
-        return Err(vynapse_core::VynapseError::TensorError(
+        return Err(VynapseError::TensorError(
             "Given tensors have different shapes.".to_string(),
         ));
     }
@@ -48,7 +48,7 @@ where
     T: Clone + Default + Mul<T, Output = T> + Zero,
 {
     if tensor_one.shape.dims != tensor_two.shape.dims {
-        return Err(vynapse_core::VynapseError::TensorError(
+        return Err(VynapseError::TensorError(
             "Given tensors have different shapes.".to_string(),
         ));
     }
@@ -67,14 +67,14 @@ where
     T: Clone + Default + Div<T, Output = T> + Zero + PartialEq,
 {
     if tensor_one.shape.dims != tensor_two.shape.dims {
-        return Err(vynapse_core::VynapseError::TensorError(
+        return Err(VynapseError::TensorError(
             "Given tensors have different shapes.".to_string(),
         ));
     }
 
     for number in tensor_two.data.clone() {
         if number.clone() == T::zero() {
-            return Err(vynapse_core::VynapseError::TensorError(
+            return Err(VynapseError::TensorError(
                 "Cannot do the division as the second tensor has a 0 in it's data.".to_string(),
             ));
         }
@@ -335,7 +335,7 @@ fn tensor_div_by_zero_error() {
     assert!(result.is_err());
 
     // Verify the error message contains "division by zero" or similar
-    if let Err(vynapse_core::VynapseError::TensorError(msg)) = result {
+    if let Err(VynapseError::TensorError(msg)) = result {
         assert!(msg.to_lowercase().contains("zero") || msg.to_lowercase().contains("division"));
     } else {
         panic!("Expected TensorError with division by zero message");

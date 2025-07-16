@@ -1,6 +1,6 @@
 use std::ops::{Add, Mul};
 
-use vynapse_core::Result;
+use vynapse_common::{Result, VynapseError};
 
 use crate::{Shape, Tensor};
 
@@ -9,19 +9,19 @@ where
     T: Default + Clone + Mul<T, Output = T> + Add<T, Output = T>,
 {
     if matrix.shape.rank() != 2 {
-        return Err(vynapse_core::VynapseError::TensorError(
+        return Err(VynapseError::TensorError(
             "The first parameter is not a matrix as it's tensor shape isn't 2.".to_string(),
         ));
     }
 
     if vector.shape.rank() != 1 {
-        return Err(vynapse_core::VynapseError::TensorError(
+        return Err(VynapseError::TensorError(
             "The second parameter is not a vector as it's tensor shape isn't 1.".to_string(),
         ));
     }
 
     if matrix.shape.dims[1] != vector.data.len() {
-        return Err(vynapse_core::VynapseError::TensorError(
+        return Err(VynapseError::TensorError(
             "The matrix columns do not match the length of the vector.".to_string(),
         ));
     }
