@@ -27,6 +27,25 @@ Every training mode operates on the same core tensor and graph runtime, enabling
 
 ---
 
+## 🎯 Immediate Plans
+
+### Core Architecture Refactoring (Modular Task/Loss/Activation System)
+
+- [ ] **Create Task Trait** - Define a generic `Task` trait that specifies dataset generation, input/output dimensions, and task identification for all learning problems
+- [ ] **Move XOR to Task Implementation** - Refactor existing XOR logic from fitness function into a dedicated `XorTask` struct implementing the Task trait
+- [ ] **Create Powers of Two Task** - Implement `PowersOfTwoTask` for the MVP learning problem (teaching genomes to predict powers of 2: 1→2, 2→4, 3→8, etc.)
+- [ ] **Create Loss Trait** - Define a generic `Loss` trait for pluggable loss function implementations with standardized calculate and naming methods
+- [ ] **Implement MSE Loss Function** - Create `MeanSquaredError` struct implementing the Loss trait for regression-style fitness evaluation
+- [ ] **Create Activation Trait** - Define a generic `Activation` trait for pluggable activation functions with single-value and tensor-wide application methods
+- [ ] **Implement Sigmoid Activation** - Create dedicated `Sigmoid` struct implementing the Activation trait with proper mathematical implementation
+- [ ] **Remove Sigmoid from Tensor Module** - Clean up tensor module by removing activation-specific logic, maintaining separation of concerns
+- [ ] **Create Generalized Fitness Function** - Build `TaskBasedFitness<T, L, A>` struct that combines any Task, Loss, and Activation via generics
+- [ ] **Implement Fitness Evaluation Logic** - Complete the modular fitness evaluation pipeline that runs datasets through networks with configurable components
+
+> **Goal**: Transform the current tightly-coupled XOR fitness function into a flexible, "plug-and-play" system where tasks, loss functions, and activations can be mixed and matched without code changes.
+
+---
+
 ## 🗺️ Roadmap Overview
 
 - [x] Milestone 1: Weight Evolution (DEAP-style) *(currently in progress)*
@@ -42,8 +61,8 @@ Every training mode operates on the same core tensor and graph runtime, enabling
 > Prove the core concept by evolving static network weights on XOR.
 
 ### 🛠️ Systems Foundations
-- [ ] Establish a multi-crate workspace (`core`, `cli`, `math`)
-- [ ] Design a project-wide error hierarchy with recoverable and fatal classes
+- [x] Establish a multi-crate workspace (`core`, `cli`, `math`)
+- [x] Design a project-wide error hierarchy with recoverable and fatal classes
 - [ ] Integrate a fast, seedable PRNG and structured log sink
 
 ### 📐 Numeric & Memory Primitives
