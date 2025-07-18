@@ -36,8 +36,8 @@ Every training mode operates on the same core tensor and graph runtime, enabling
 - [x] **Create Powers of Two Task** - Implement `PowersOfTwoTask` for the MVP learning problem (teaching genomes to predict powers of 2: 1→2, 2→4, 3→8, etc.)
 - [x] **Create Loss Trait** - Define a generic `Loss` trait for pluggable loss function implementations with standardized calculate and naming methods
 - [x] **Implement MSE Loss Function** - Create `MeanSquaredError` struct implementing the Loss trait for regression-style fitness evaluation
-- [ ] **Create Activation Trait** - Define a generic `Activation` trait for pluggable activation functions with single-value and tensor-wide application methods
-- [ ] **Implement Sigmoid Activation** - Create dedicated `Sigmoid` struct implementing the Activation trait with proper mathematical implementation
+- [x] **Create Activation Trait** - Define a generic `Activation` trait for pluggable activation functions with single-value and tensor-wide application methods
+- [x] **Implement Sigmoid Activation** - Create dedicated `Sigmoid` struct implementing the Activation trait with proper mathematical implementation
 - [ ] **Remove Sigmoid from Tensor Module** - Clean up tensor module by removing activation-specific logic, maintaining separation of concerns
 - [ ] **Create Generalized Fitness Function** - Build `TaskBasedFitness<T, L, A>` struct that combines any Task, Loss, and Activation via generics
 - [ ] **Implement Fitness Evaluation Logic** - Complete the modular fitness evaluation pipeline that runs datasets through networks with configurable components
