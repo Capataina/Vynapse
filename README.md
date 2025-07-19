@@ -57,6 +57,175 @@ Every training mode operates on the same core tensor and graph runtime, enabling
 
 ---
 
+## 🎛️ Universal Configuration System
+
+> **⚠️ FUTURE VISION**: This configuration system represents our **long-term architectural goal**, not the current implementation. The MVP will use hard-coded parameters, with this comprehensive config system planned for **Milestone 2+**.
+
+### Philosophy: Complete Experimental Control
+
+Vynapse will use a comprehensive JSON configuration system that provides complete control over every aspect of the training pipeline. Users will be able to specify everything from low-level hyperparameters to high-level algorithmic choices, enabling complex experimental setups and easy reproducibility.
+
+### Configuration Structure
+
+The configuration uses a direct, explicit approach where everything is defined exactly where it's used - no templates, no inheritance, just clear and straightforward JSON:
+
+```json
+{
+ "experiment": {
+   "name": "xor_evolution_example",
+   "description": "Evolutionary neural network learning XOR with multiple selection strategies",
+   "seed": 42,
+   "output_dir": "./experiments/xor_001"
+ },
+ "hardware": {
+   "device": "cpu",
+   "threads": 8,
+   "memory_limit_gb": 4
+ },
+ "genome": {
+   "type": "fixed_topology",
+   "shape": [2, 4, 1],
+   "weight_init": "xavier",
+   "weight_range": [-2.0, 2.0],
+   "bias_enabled": true
+ },
+ "training": {
+   "mode": "evolutionary",
+   "population_size": 100,
+   "max_generations": 1000,
+   "convergence": {
+     "target_fitness": 0.95,
+     "stagnation_limit": 100,
+     "early_stopping": true
+   }
+ },
+ "fitness": {
+   "type": "multi_objective",
+   "objectives": [
+     {
+       "name": "xor_performance",
+       "task": {
+         "type": "xor"
+       },
+       "loss": {
+         "type": "mse"
+       },
+       "activation": {
+         "type": "sigmoid"
+       },
+       "weight": 0.8
+     },
+     {
+       "name": "complexity_penalty",
+       "task": {
+         "type": "parameter_count_penalty",
+         "target_size": 20
+       },
+       "weight": 0.2
+     }
+   ]
+ },
+ "selection": {
+   "strategies": [
+     {
+       "type": "elitism",
+       "weight": 0.1,
+       "count": 5
+     },
+     {
+       "type": "tournament",
+       "weight": 0.7,
+       "tournament_size": 3
+     },
+     {
+       "type": "random",
+       "weight": 0.2
+     }
+   ]
+ },
+ "mutation": {
+   "global_rate": 0.1,
+   "strategies": [
+     {
+       "type": "gaussian",
+       "probability": 0.8,
+       "sigma": 0.15,
+       "adaptive": true
+     },
+     {
+       "type": "uniform",
+       "probability": 0.2,
+       "range": [-0.5, 0.5]
+     }
+   ]
+ },
+ "crossover": {
+   "type": "uniform",
+   "rate": 0.8
+ },
+ "logging": {
+   "level": "info",
+   "console": {
+     "enabled": true,
+     "progress_bar": true
+   },
+   "file": {
+     "enabled": true,
+     "format": "json"
+   },
+   "metrics": [
+     "fitness_stats",
+     "population_diversity",
+     "generation_time"
+   ]
+ },
+ "checkpointing": {
+   "enabled": true,
+   "frequency": 100,
+   "keep_best_n": 5
+ }
+}
+```
+
+### Key Features
+
+#### **Complete Modularity**
+- **Multiple Training Modes**: `evolutionary`, `neat`, `sgd`, `hybrid`, `static_graph`
+- **Flexible Genome Types**: `fixed_topology`, `neat`, `es`, custom implementations
+- **Pluggable Tasks**: `xor`, `powers_of_two`, `cartpole`, `mnist`, custom problems
+- **Multiple Loss Functions**: `mse`, `cross_entropy`, `mae`, `huber`, custom losses
+- **Various Activation Functions**: `sigmoid`, `relu`, `tanh`, `leaky_relu`, `swish`, custom
+
+#### **Multi-Strategy Support**
+- **Combined Selection**: Mix elitism, tournament, roulette, random with custom weights
+- **Hybrid Mutation**: Multiple mutation strategies with probability distributions
+- **Multi-Objective Fitness**: Combine task performance, complexity penalties, diversity bonuses
+- **Hardware Flexibility**: CPU/GPU selection, threading, memory management
+
+#### **Advanced Training Control**
+- **Convergence Criteria**: Fitness thresholds, stagnation detection, early stopping
+- **Comprehensive Logging**: Real-time metrics, file outputs, visualization
+- **Experiment Reproducibility**: Seed control, checkpointing, complete provenance
+- **Performance Monitoring**: Population diversity, selection pressure, mutation impact
+
+### Usage Philosophy
+
+This configuration system transforms Vynapse into a true research platform where:
+
+1. **Every Parameter is Configurable**: From population size to activation functions
+2. **Experiments are Reproducible**: Complete experimental setup in a single file
+3. **Research is Accelerated**: Easy parameter sweeps and algorithmic comparisons
+4. **Sharing is Simplified**: Researchers can share exact experimental configurations
+5. **Extension is Natural**: New algorithms integrate seamlessly into existing structure
+
+### Implementation Timeline
+
+- **Milestone 1 (Current)**: Hard-coded parameters in evolutionary trainer
+- **Milestone 2**: Basic JSON configuration with CLI overrides
+- **Milestone 3+**: Full JSON configuration system with all features above
+
+---
+
 ## 📍 Milestone 1 – *Genesis* (Weight-Evolution MVP)  
 > Prove the core concept by evolving static network weights on XOR.
 
