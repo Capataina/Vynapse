@@ -29,20 +29,20 @@ Every training mode operates on the same core tensor and graph runtime, enabling
 
 ## 🎯 Immediate Plans
 
-### Core Architecture Refactoring (Modular Task/Loss/Activation System)
+### Population Management & Generation Loop (Generic Evolutionary Engine MVP)
 
-- [x] **Create Task Trait** - Define a generic `Task` trait that specifies dataset generation, input/output dimensions, and task identification for all learning problems
-- [x] **Move XOR to Task Implementation** - Refactor existing XOR logic from fitness function into a dedicated `XorTask` struct implementing the Task trait
-- [x] **Create Powers of Two Task** - Implement `PowersOfTwoTask` for the MVP learning problem (teaching genomes to predict powers of 2: 1→2, 2→4, 3→8, etc.)
-- [x] **Create Loss Trait** - Define a generic `Loss` trait for pluggable loss function implementations with standardized calculate and naming methods
-- [x] **Implement MSE Loss Function** - Create `MeanSquaredError` struct implementing the Loss trait for regression-style fitness evaluation
-- [x] **Create Activation Trait** - Define a generic `Activation` trait for pluggable activation functions with single-value and tensor-wide application methods
-- [x] **Implement Sigmoid Activation** - Create dedicated `Sigmoid` struct implementing the Activation trait with proper mathematical implementation
-- [x] **Remove Sigmoid from Tensor Module** - Clean up tensor module by removing activation-specific logic, maintaining separation of concerns
-- [x] **Create Generalized Fitness Function** - Build `TaskBasedFitness<T, L, A>` struct that combines any Task, Loss, and Activation via generics
-- [x] **Implement Fitness Evaluation Logic** - Complete the modular fitness evaluation pipeline that runs datasets through networks with configurable components
+- [ ] **Create Generic Evolutionary Trainer Foundation** - Define `EvolutionaryTrainer<G, F, S>` struct with generic type parameters implementing `Genome`, `Fitness`, and `Selection` traits, including population storage (`Vec<G>`), basic hyperparameter configuration, and compile-time trait bound validation
+- [ ] **Design Template-Based Population Initialization** - Build simple population factory system using genome templates for shape inference, implementing sequential genome generation with basic initialization strategies and straightforward memory allocation
+- [ ] **Implement Sequential Fitness Evaluation Pipeline** - Create population-wide fitness assessment with simple sequential evaluation using trait objects, basic fitness result collection, and essential error handling for evaluation failures
+- [ ] **Build Trait-Generic Parent Selection Mechanism** - Implement selection phase using polymorphic `Selection` trait dispatch, supporting basic selection pressure configuration and handling simple edge cases like identical fitness values
+- [ ] **Create Polymorphic Offspring Generation System** - Build basic reproduction pipeline with trait-based crossover and mutation operators, implementing simple elitism preservation and configurable genetic operator probabilities
+- [ ] **Implement Basic Population Replacement Strategy** - Create straightforward generational transition system supporting (μ + λ) strategy with population size consistency and simple generation replacement logic
+- [ ] **Build Simple Training Loop Controller** - Create main evolutionary orchestrator with basic termination criteria (generation limits, simple fitness thresholds), minimal progress tracking, and essential error handling
+- [ ] **Add Basic Training Statistics System** - Implement simple training observability with fitness statistics collection (min/max/average), generation counting, and basic console logging for evolutionary progress monitoring
+- [ ] **Implement Generic Trainer Trait Integration** - Connect evolutionary trainer to unified training framework through standardized `Trainer` trait interface, enabling trait-based interchangeability with future SGD, NEAT, and other optimization implementations
+- [ ] **Create MVP Integration Test Suite** - Build end-to-end validation testing complete generic pipeline instantiation (`FixedTopologyGenome + TaskBasedFitness + TournamentSelection`) with basic convergence verification and functional correctness validation
 
-> **Goal**: Transform the current tightly-coupled XOR fitness function into a flexible, "plug-and-play" system where tasks, loss functions, and activations can be mixed and matched without code changes.
+> **Goal**: Build a simple, fully generic, trait-based evolutionary optimization engine MVP that can evolve any `Genome` implementation using any `Fitness` function and `Selection` strategy. This foundational system will demonstrate genuine evolutionary learning on the PowersOfTwo task while remaining completely modular and pluggable, serving as the core engine for future performance optimizations, parallelization, and advanced features.
 
 ---
 
