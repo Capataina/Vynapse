@@ -38,9 +38,9 @@ Every training mode operates on the same core tensor and graph runtime, enabling
 - [x] **Implement MSE Loss Function** - Create `MeanSquaredError` struct implementing the Loss trait for regression-style fitness evaluation
 - [x] **Create Activation Trait** - Define a generic `Activation` trait for pluggable activation functions with single-value and tensor-wide application methods
 - [x] **Implement Sigmoid Activation** - Create dedicated `Sigmoid` struct implementing the Activation trait with proper mathematical implementation
-- [ ] **Remove Sigmoid from Tensor Module** - Clean up tensor module by removing activation-specific logic, maintaining separation of concerns
-- [ ] **Create Generalized Fitness Function** - Build `TaskBasedFitness<T, L, A>` struct that combines any Task, Loss, and Activation via generics
-- [ ] **Implement Fitness Evaluation Logic** - Complete the modular fitness evaluation pipeline that runs datasets through networks with configurable components
+- [x] **Remove Sigmoid from Tensor Module** - Clean up tensor module by removing activation-specific logic, maintaining separation of concerns
+- [x] **Create Generalized Fitness Function** - Build `TaskBasedFitness<T, L, A>` struct that combines any Task, Loss, and Activation via generics
+- [x] **Implement Fitness Evaluation Logic** - Complete the modular fitness evaluation pipeline that runs datasets through networks with configurable components
 
 > **Goal**: Transform the current tightly-coupled XOR fitness function into a flexible, "plug-and-play" system where tasks, loss functions, and activations can be mixed and matched without code changes.
 
