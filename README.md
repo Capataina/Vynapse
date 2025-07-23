@@ -48,7 +48,7 @@ Every training mode operates on the same core tensor and graph runtime, enabling
 
 ## 🗺️ Roadmap Overview
 
-- [ ] Milestone 1: Evolution Strategies Foundation *(currently in progress)*
+- [ ] Milestone 1: Evolution Strategies Foundation _(currently in progress)_
 - [ ] Milestone 2: Configuration & Experimentation Layer
 - [ ] Milestone 3: DEAP-Style Population Algorithms
 - [ ] Milestone 4: NEAT - Topology Evolution
@@ -66,7 +66,9 @@ Every training mode operates on the same core tensor and graph runtime, enabling
 These principles guide every architectural decision and milestone implementation:
 
 ### Trait-Based Modularity
+
 Every component implements a trait interface, enabling complete interchangeability:
+
 - **Genomes**: `FixedTopology`, `NEAT`, `VariableLength`, custom implementations
 - **Fitness Functions**: `TaskBased`, `MultiObjective`, `Novelty`, custom evaluations
 - **Selection Strategies**: `Tournament`, `Roulette`, `Rank`, custom selectors
@@ -75,14 +77,18 @@ Every component implements a trait interface, enabling complete interchangeabili
 - **Activations**: `Sigmoid`, `ReLU`, `Tanh`, custom functions
 
 ### Progressive Enhancement
+
 Each milestone builds directly on previous work:
+
 - Start with simple evolution on fixed topologies
 - Add configuration before adding complexity
 - Build gradient descent on top of existing tensor operations
 - Merge paradigms only after individual mastery
 
 ### Configuration-First Design
+
 Every feature is designed with JSON configurability in mind:
+
 - No hard-coded hyperparameters
 - String-based component selection
 - Nested configuration objects
@@ -101,6 +107,7 @@ Vynapse uses a comprehensive JSON configuration system that provides complete co
 ### Configuration Evolution by Milestone
 
 **Milestone 1**: Hard-coded parameters (current state)
+
 ```python
 # Everything is currently hard-coded
 population_size = 100
@@ -109,6 +116,7 @@ mutation_rate = 0.1
 ```
 
 **Milestone 2**: Basic configuration support
+
 ```json
 {
   "experiment": {
@@ -131,6 +139,7 @@ mutation_rate = 0.1
 ```
 
 **Milestone 3+**: Full configuration with all features
+
 ```json
 {
   "experiment": {
@@ -234,14 +243,17 @@ The configuration system embodies Vynapse's core philosophy:
 ---
 
 ## 📍 Milestone 1: Evolution Strategies Foundation
+
 > **Goal**: Prove the core evolutionary engine works end-to-end on PowersOfTwo task
 
 ### Configuration Impact
+
 - No configuration file yet - all parameters hard-coded
 - Design every component with future configurability in mind
 - Use trait-based architecture to prepare for dynamic loading
 
 ### Part A: Mathematical Foundations
+
 - [x] Create `Shape` struct with dimension validation and total element calculation
 - [x] Implement `Tensor<T>` with contiguous storage, shape, and stride metadata
 - [x] Build basic arithmetic operations (add, sub, mul, div) with shape checking
@@ -249,14 +261,20 @@ The configuration system embodies Vynapse's core philosophy:
 - [x] Implement tensor reshaping and transposition operations
 
 ### Part B: Evolutionary Building Blocks
+
 - [x] Define core traits: `Genome`, `Fitness`, `Selection`, `Task`, `Loss`, `Activation`
 - [x] Implement `FixedTopologyGenome` with flat weight storage
 - [x] Create `Gaussian` and `Uniform` mutation operators
 - [x] Build `Tournament` selection strategy
 - [x] Implement `MSE` loss and `Sigmoid` activation
 - [x] Create `PowersOfTwo` and `XOR` tasks
+- [ ] Refactor genome traits to separate genetic operators from genome storage
+- [ ] Create `Mutation` and `Crossover` traits with generic implementations
+- [ ] Update `FixedTopologyGenome` to use external genetic operators
+- [ ] Implement `GaussianMutation`, `UniformMutation`, `UniformCrossover` as separate components
 
 ### Part C: Population Evolution Loop
+
 - [ ] Create `EvolutionaryTrainer<G, F, S>` with generic type parameters
 - [ ] Implement population initialization from genome template
 - [ ] Build fitness evaluation pipeline with parallel population assessment
@@ -266,6 +284,7 @@ The configuration system embodies Vynapse's core philosophy:
 - [ ] Build generation loop with convergence detection
 
 ### Part D: Observable Training
+
 - [ ] Add generation counter and fitness tracking
 - [ ] Implement console output showing best/average/worst fitness
 - [ ] Create basic CSV logging for fitness progression
@@ -273,19 +292,23 @@ The configuration system embodies Vynapse's core philosophy:
 - [ ] Build simple CLI to run training
 
 ### Deliverable
+
 Working CLI that evolves neural networks to solve PowersOfTwo: `vynapse train --task powers_of_two --generations 100`
 
 ---
 
 ## 📍 Milestone 2: Configuration & Experimentation Layer
+
 > **Goal**: Make the system fully configurable without code changes
 
 ### Configuration Impact
+
 - This milestone **introduces** the configuration system
 - All hard-coded parameters become configurable
 - Components become dynamically loadable
 
 ### Part A: Configuration Schema Design
+
 - [ ] Design JSON schema for experiments, genome, training, fitness, selection
 - [ ] Create configuration structs with serde derivation
 - [ ] Implement validation with meaningful error messages
@@ -293,6 +316,7 @@ Working CLI that evolves neural networks to solve PowersOfTwo: `vynapse train --
 - [ ] Add schema documentation generator
 
 ### Part B: Component Registry System
+
 - [ ] Create registry pattern for all trait implementations
 - [ ] Implement string-to-component mapping (e.g., "tournament" → `TournamentSelection`)
 - [ ] Build factory functions for each component type
@@ -300,6 +324,7 @@ Working CLI that evolves neural networks to solve PowersOfTwo: `vynapse train --
 - [ ] Implement configuration-based instantiation
 
 ### Part C: Dynamic Loading Pipeline
+
 - [ ] Parse JSON configuration files
 - [ ] Validate against schema with helpful errors
 - [ ] Instantiate components from configuration
@@ -307,6 +332,7 @@ Working CLI that evolves neural networks to solve PowersOfTwo: `vynapse train --
 - [ ] Handle missing components gracefully
 
 ### Part D: Experiment Management
+
 - [ ] Create experiment directory structure
 - [ ] Copy configuration to output directory
 - [ ] Add timestamp and git hash to metadata
@@ -314,20 +340,24 @@ Working CLI that evolves neural networks to solve PowersOfTwo: `vynapse train --
 - [ ] Build experiment comparison tools
 
 ### Deliverable
+
 Run any experiment via configuration: `vynapse train --config experiments/powers_of_two.json`
 
 ---
 
 ## 📍 Milestone 3: DEAP-Style Population Algorithms
+
 > **Goal**: Implement the full spectrum of evolutionary algorithms
 
 ### Configuration Impact
+
 - Extend configuration with new selection strategies
 - Add support for multi-strategy selection with weights
 - Configure advanced genetic operators
 - Support different population replacement strategies
 
 ### Part A: Selection Strategy Suite
+
 - [ ] Implement `RouletteWheel` selection (fitness proportionate)
 - [ ] Add `Rank` selection with linear/exponential ranking
 - [ ] Create `Stochastic Universal Sampling` (SUS)
@@ -335,6 +365,7 @@ Run any experiment via configuration: `vynapse train --config experiments/powers
 - [ ] Implement multi-strategy selection with configurable weights
 
 ### Part B: Advanced Genetic Operators
+
 - [ ] Add `KPoint` crossover (1-point, 2-point, n-point)
 - [ ] Implement `Arithmetic` crossover with α blending
 - [ ] Create `Polynomial` mutation with distribution index
@@ -342,6 +373,7 @@ Run any experiment via configuration: `vynapse train --config experiments/powers
 - [ ] Build operator probability scheduling over generations
 
 ### Part C: Population Management Strategies
+
 - [ ] Implement (μ, λ) selection (only offspring survive)
 - [ ] Add steady-state evolution (one-at-a-time replacement)
 - [ ] Create island model with migration
@@ -349,6 +381,7 @@ Run any experiment via configuration: `vynapse train --config experiments/powers
 - [ ] Add age-based replacement policies
 
 ### Part D: Extended Task Suite
+
 - [ ] Implement N-bit parity problems
 - [ ] Add OneMax and deceptive trap functions
 - [ ] Create basic symbolic regression framework
@@ -356,14 +389,15 @@ Run any experiment via configuration: `vynapse train --config experiments/powers
 - [ ] Add multi-objective test problems
 
 ### Configuration Example
+
 ```json
 {
   "selection": {
     "strategies": [
-      {"type": "elitism", "count": 2},
-      {"type": "tournament", "weight": 0.5, "size": 3},
-      {"type": "roulette", "weight": 0.3},
-      {"type": "random", "weight": 0.2}
+      { "type": "elitism", "count": 2 },
+      { "type": "tournament", "weight": 0.5, "size": 3 },
+      { "type": "roulette", "weight": 0.3 },
+      { "type": "random", "weight": 0.2 }
     ]
   },
   "population": {
@@ -374,20 +408,24 @@ Run any experiment via configuration: `vynapse train --config experiments/powers
 ```
 
 ### Deliverable
+
 Full DEAP-equivalent functionality with advanced EA features
 
 ---
 
 ## 📍 Milestone 4: NEAT - Topology Evolution
+
 > **Goal**: Evolve both weights AND network structure
 
 ### Configuration Impact
+
 - Add NEAT-specific genome configuration
 - Configure speciation parameters
 - Support structural mutation probabilities
 - Enable/disable recurrent connections
 
 ### Part A: NEAT Genome Architecture
+
 - [ ] Create `NodeGene` and `ConnectionGene` structures
 - [ ] Implement innovation number tracking
 - [ ] Build genome with dynamic topology
@@ -395,6 +433,7 @@ Full DEAP-equivalent functionality with advanced EA features
 - [ ] Implement genome validation and cycle detection
 
 ### Part B: Speciation System
+
 - [ ] Calculate compatibility distance (δ = c₁E/N + c₂D/N + c₃W̄)
 - [ ] Implement species clustering algorithm
 - [ ] Add fitness sharing within species
@@ -402,6 +441,7 @@ Full DEAP-equivalent functionality with advanced EA features
 - [ ] Create dynamic speciation threshold adjustment
 
 ### Part C: NEAT-Specific Operations
+
 - [ ] Implement structural crossover with innovation alignment
 - [ ] Add historical markings for crossover
 - [ ] Build champion preservation per species
@@ -409,6 +449,7 @@ Full DEAP-equivalent functionality with advanced EA features
 - [ ] Implement interspecies mating probability
 
 ### Part D: Dynamic Execution Engine
+
 - [ ] Build topological sort for feedforward execution
 - [ ] Add support for recurrent connections
 - [ ] Implement activation spreading over time
@@ -416,6 +457,7 @@ Full DEAP-equivalent functionality with advanced EA features
 - [ ] Add network pruning and simplification
 
 ### Configuration Example
+
 ```json
 {
   "genome": {
@@ -425,7 +467,9 @@ Full DEAP-equivalent functionality with advanced EA features
   },
   "neat": {
     "compatibility_threshold": 3.0,
-    "c1": 1.0, "c2": 1.0, "c3": 0.4,
+    "c1": 1.0,
+    "c2": 1.0,
+    "c3": 0.4,
     "add_node_prob": 0.03,
     "add_connection_prob": 0.05
   }
@@ -433,20 +477,24 @@ Full DEAP-equivalent functionality with advanced EA features
 ```
 
 ### Deliverable
+
 Topology-evolving networks solving XOR and pole balancing
 
 ---
 
 ## 📍 Milestone 5: Gradient Descent Fundamentals
+
 > **Goal**: Implement basic supervised learning without autodiff
 
 ### Configuration Impact
+
 - Add SGD trainer configuration
 - Configure learning rates and schedules
 - Support different optimizers
 - Enable gradient clipping and regularization
 
 ### Part A: Neural Network Abstractions
+
 - [ ] Create `Layer` trait with forward pass
 - [ ] Implement `Dense`, `Activation` layers
 - [ ] Build `Sequential` model container
@@ -454,6 +502,7 @@ Topology-evolving networks solving XOR and pole balancing
 - [ ] Create parameter initialization strategies
 
 ### Part B: Manual Backpropagation
+
 - [ ] Implement backward pass for each layer type
 - [ ] Calculate gradients using chain rule
 - [ ] Build gradient accumulation for batches
@@ -461,6 +510,7 @@ Topology-evolving networks solving XOR and pole balancing
 - [ ] Create computational graph for debugging
 
 ### Part C: Optimization Algorithms
+
 - [ ] Implement vanilla SGD
 - [ ] Add SGD with momentum
 - [ ] Create learning rate schedules (step, exponential, cosine)
@@ -468,6 +518,7 @@ Topology-evolving networks solving XOR and pole balancing
 - [ ] Add L1/L2 regularization
 
 ### Part D: Supervised Learning Tasks
+
 - [ ] Add MNIST dataset loader
 - [ ] Implement data batching and shuffling
 - [ ] Create train/validation split
@@ -475,6 +526,7 @@ Topology-evolving networks solving XOR and pole balancing
 - [ ] Add simple regression benchmarks
 
 ### Configuration Example
+
 ```json
 {
   "training": {
@@ -495,20 +547,24 @@ Topology-evolving networks solving XOR and pole balancing
 ```
 
 ### Deliverable
+
 Train neural networks on MNIST achieving >95% accuracy
 
 ---
 
 ## 📍 Milestone 6: Automatic Differentiation Engine
+
 > **Goal**: PyTorch-style dynamic computation graphs
 
 ### Configuration Impact
+
 - Add autodiff mode configuration
 - Configure gradient tape behavior
 - Support training mode switching
 - Enable/disable gradient tracking
 
 ### Part A: Computation Graph Infrastructure
+
 - [ ] Create `Node` struct with operation and parent tracking
 - [ ] Implement `GradientTape` for recording operations
 - [ ] Build tensor wrapper with gradient storage
@@ -516,6 +572,7 @@ Train neural networks on MNIST achieving >95% accuracy
 - [ ] Create operation registry
 
 ### Part B: Reverse-Mode Autodiff
+
 - [ ] Implement automatic backward pass
 - [ ] Add gradient functions for all operations
 - [ ] Build topological sort for gradient flow
@@ -523,6 +580,7 @@ Train neural networks on MNIST achieving >95% accuracy
 - [ ] Create higher-order derivative support
 
 ### Part C: Eager Execution Mode
+
 - [ ] Overload arithmetic operators for automatic taping
 - [ ] Add dynamic shape inference
 - [ ] Implement broadcasting rules
@@ -530,6 +588,7 @@ Train neural networks on MNIST achieving >95% accuracy
 - [ ] Build debugging utilities
 
 ### Part D: Advanced Operations
+
 - [ ] Add convolution and pooling operations
 - [ ] Implement batch normalization
 - [ ] Create dropout with training mode awareness
@@ -537,6 +596,7 @@ Train neural networks on MNIST achieving >95% accuracy
 - [ ] Build gradient checkpointing
 
 ### Configuration Example
+
 ```json
 {
   "training": {
@@ -549,20 +609,24 @@ Train neural networks on MNIST achieving >95% accuracy
 ```
 
 ### Deliverable
+
 Full autodiff system with PyTorch-like API and performance
 
 ---
 
 ## 📍 Milestone 7: Static Graph Compilation
+
 > **Goal**: TensorFlow-style graph optimization and execution
 
 ### Configuration Impact
+
 - Add static graph mode configuration
 - Configure optimization passes
 - Support execution strategies
 - Enable profiling and tracing
 
 ### Part A: Graph Construction API
+
 - [ ] Create placeholder and variable nodes
 - [ ] Build static graph construction API
 - [ ] Implement shape inference system
@@ -570,6 +634,7 @@ Full autodiff system with PyTorch-like API and performance
 - [ ] Create graph serialization
 
 ### Part B: Graph Optimization Passes
+
 - [ ] Implement constant folding
 - [ ] Add common subexpression elimination
 - [ ] Create operation fusion (matmul+bias+relu)
@@ -577,6 +642,7 @@ Full autodiff system with PyTorch-like API and performance
 - [ ] Add dead code elimination
 
 ### Part C: Execution Engine
+
 - [ ] Create topological execution order
 - [ ] Implement memory allocation planning
 - [ ] Build parallel execution scheduler
@@ -584,6 +650,7 @@ Full autodiff system with PyTorch-like API and performance
 - [ ] Create execution caching
 
 ### Part D: Compilation Features
+
 - [ ] Add XLA-style operation lowering
 - [ ] Implement kernel fusion
 - [ ] Create device placement optimization
@@ -591,6 +658,7 @@ Full autodiff system with PyTorch-like API and performance
 - [ ] Add distributed graph support
 
 ### Configuration Example
+
 ```json
 {
   "training": {
@@ -603,20 +671,24 @@ Full autodiff system with PyTorch-like API and performance
 ```
 
 ### Deliverable
+
 Optimized static graph execution with significant speedups
 
 ---
 
 ## 📍 Milestone 8: Hybrid Learning Paradigms
+
 > **Goal**: Combine evolution with gradient descent
 
 ### Configuration Impact
+
 - Configure hybrid training modes
 - Set evolution/gradient ratios
 - Control inheritance strategies
 - Define multi-phase training
 
 ### Part A: Lamarckian Evolution
+
 - [ ] Evolve initial population
 - [ ] Select top performers for gradient descent
 - [ ] Fine-tune with configurable epochs
@@ -624,6 +696,7 @@ Optimized static graph execution with significant speedups
 - [ ] Update fitness with improved performance
 
 ### Part B: Baldwin Effect Implementation
+
 - [ ] Implement lifetime learning without inheritance
 - [ ] Evaluate fitness after learning
 - [ ] Evolve learning capacity
@@ -631,6 +704,7 @@ Optimized static graph execution with significant speedups
 - [ ] Compare with Lamarckian approach
 
 ### Part C: Advanced Hybrid Methods
+
 - [ ] Create alternating evolution/gradient phases
 - [ ] Implement population-based training (PBT)
 - [ ] Add hyperparameter evolution
@@ -638,6 +712,7 @@ Optimized static graph execution with significant speedups
 - [ ] Create meta-learning objectives
 
 ### Part D: Hybrid Optimization
+
 - [ ] Optimize switching strategies
 - [ ] Implement adaptive phase lengths
 - [ ] Create multi-objective hybrid fitness
@@ -645,6 +720,7 @@ Optimized static graph execution with significant speedups
 - [ ] Build transfer learning support
 
 ### Configuration Example
+
 ```json
 {
   "training": {
@@ -659,20 +735,24 @@ Optimized static graph execution with significant speedups
 ```
 
 ### Deliverable
+
 State-of-the-art hybrid optimization outperforming individual methods
 
 ---
 
 ## 📍 Milestone 9: Performance & Distribution
+
 > **Goal**: Scale to real-world problems
 
 ### Configuration Impact
+
 - Configure hardware targets
 - Set parallelization strategies
 - Define distribution topology
 - Control optimization levels
 
 ### Part A: CPU Optimization
+
 - [ ] Implement SIMD operations for tensor math
 - [ ] Add cache-aware algorithms
 - [ ] Create parallel population evaluation
@@ -680,6 +760,7 @@ State-of-the-art hybrid optimization outperforming individual methods
 - [ ] Optimize memory allocation patterns
 
 ### Part B: GPU Acceleration
+
 - [ ] Create WGSL compute shaders
 - [ ] Implement GPU memory management
 - [ ] Build kernel fusion system
@@ -687,6 +768,7 @@ State-of-the-art hybrid optimization outperforming individual methods
 - [ ] Create CPU-GPU scheduling
 
 ### Part C: Distributed Training
+
 - [ ] Implement MPI-based distribution
 - [ ] Add parameter server architecture
 - [ ] Create gossip-based evolution
@@ -694,6 +776,7 @@ State-of-the-art hybrid optimization outperforming individual methods
 - [ ] Add elastic scaling
 
 ### Part D: Performance Tools
+
 - [ ] Create profiling framework
 - [ ] Add performance regression tests
 - [ ] Build optimization advisor
@@ -701,6 +784,7 @@ State-of-the-art hybrid optimization outperforming individual methods
 - [ ] Create benchmarking suite
 
 ### Configuration Example
+
 ```json
 {
   "hardware": {
@@ -716,20 +800,24 @@ State-of-the-art hybrid optimization outperforming individual methods
 ```
 
 ### Deliverable
+
 10-100x speedups enabling large-scale experiments
 
 ---
 
 ## 📍 Milestone 10: Research Platform
+
 > **Goal**: Enable cutting-edge research and deployment
 
 ### Configuration Impact
+
 - Support experimental algorithms
 - Configure analysis tools
 - Enable plugin system
 - Define export formats
 
 ### Part A: Advanced Algorithms
+
 - [ ] Implement novelty search
 - [ ] Add quality diversity algorithms (MAP-Elites)
 - [ ] Create coevolution framework
@@ -737,6 +825,7 @@ State-of-the-art hybrid optimization outperforming individual methods
 - [ ] Add neural architecture search
 
 ### Part B: Analysis & Visualization
+
 - [ ] Create genealogy tracking
 - [ ] Build fitness landscape visualization
 - [ ] Add population diversity metrics
@@ -744,6 +833,7 @@ State-of-the-art hybrid optimization outperforming individual methods
 - [ ] Create interactive dashboards
 
 ### Part C: Integration & Deployment
+
 - [ ] Build Python bindings
 - [ ] Create model export (ONNX, TensorFlow Lite)
 - [ ] Add inference runtime
@@ -751,6 +841,7 @@ State-of-the-art hybrid optimization outperforming individual methods
 - [ ] Create cloud deployment tools
 
 ### Part D: Research Tools
+
 - [ ] Add experiment tracking integration
 - [ ] Create paper-ready plotting
 - [ ] Build statistical analysis
@@ -758,6 +849,7 @@ State-of-the-art hybrid optimization outperforming individual methods
 - [ ] Create benchmark suites
 
 ### Configuration Example
+
 ```json
 {
   "research": {
@@ -776,6 +868,7 @@ State-of-the-art hybrid optimization outperforming individual methods
 ```
 
 ### Deliverable
+
 Complete research and deployment platform rivaling established frameworks
 
 ---
