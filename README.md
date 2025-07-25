@@ -269,13 +269,13 @@ The configuration system embodies Vynapse's core philosophy:
 - [x] Implement `MSE` loss and `Sigmoid` activation
 - [x] Create `PowersOfTwo` and `XOR` tasks
 - [ ] Refactor genome traits to separate genetic operators from genome storage
-- [ ] Create `Mutation` and `Crossover` traits with generic implementations
-- [ ] Update `FixedTopologyGenome` to use external genetic operators
-- [ ] Implement `GaussianMutation`, `UniformMutation`, `UniformCrossover` as separate components
+- [x] Create `Mutation` and `Crossover` traits with generic implementations
+- [ ] Update `FixedTopologyGenome` to use external genetic operators inside the trainer
+- [x] Implement `GaussianMutation`, `UniformCrossover` as separate components
 
 ### Part C: Population Evolution Loop
 
-- [ ] Create `EvolutionaryTrainer<G, F, S>` with generic type parameters
+- [ ] Create `EvolutionaryTrainer<G, F, S, M, C>` with generic type parameters
 - [ ] Implement population initialization from genome template
 - [ ] Build fitness evaluation pipeline with parallel population assessment
 - [ ] Create parent selection using configured strategy

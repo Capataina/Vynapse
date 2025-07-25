@@ -7,5 +7,6 @@ edition = "2024"
 vynapse-math = { path = "../vynapse-math" }
 vynapse-common = { path = "../vynapse-common" }
 rand = "0.9.1"
+rand_distr = "*"
 serde = "1.0.219"
 thiserror = "2.0.12"
