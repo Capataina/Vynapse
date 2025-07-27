@@ -31,18 +31,18 @@ Every training mode operates on the same core tensor and graph runtime, enabling
 
 ### Population Management & Generation Loop (Generic Evolutionary Engine MVP)
 
-- [ ] **Create Generic Evolutionary Trainer Foundation** - Define `EvolutionaryTrainer<G, F, S>` struct with generic type parameters implementing `Genome`, `Fitness`, and `Selection` traits, including population storage (`Vec<G>`), basic hyperparameter configuration, and compile-time trait bound validation
-- [ ] **Design Template-Based Population Initialization** - Build simple population factory system using genome templates for shape inference, implementing sequential genome generation with basic initialization strategies and straightforward memory allocation
-- [ ] **Implement Sequential Fitness Evaluation Pipeline** - Create population-wide fitness assessment with simple sequential evaluation using trait objects, basic fitness result collection, and essential error handling for evaluation failures
-- [ ] **Build Trait-Generic Parent Selection Mechanism** - Implement selection phase using polymorphic `Selection` trait dispatch, supporting basic selection pressure configuration and handling simple edge cases like identical fitness values
-- [ ] **Create Polymorphic Offspring Generation System** - Build basic reproduction pipeline with trait-based crossover and mutation operators, implementing simple elitism preservation and configurable genetic operator probabilities
-- [ ] **Implement Basic Population Replacement Strategy** - Create straightforward generational transition system supporting (μ + λ) strategy with population size consistency and simple generation replacement logic
-- [ ] **Build Simple Training Loop Controller** - Create main evolutionary orchestrator with basic termination criteria (generation limits, simple fitness thresholds), minimal progress tracking, and essential error handling
-- [ ] **Add Basic Training Statistics System** - Implement simple training observability with fitness statistics collection (min/max/average), generation counting, and basic console logging for evolutionary progress monitoring
-- [ ] **Implement Generic Trainer Trait Integration** - Connect evolutionary trainer to unified training framework through standardized `Trainer` trait interface, enabling trait-based interchangeability with future SGD, NEAT, and other optimization implementations
-- [ ] **Create MVP Integration Test Suite** - Build end-to-end validation testing complete generic pipeline instantiation (`FixedTopologyGenome + TaskBasedFitness + TournamentSelection`) with basic convergence verification and functional correctness validation
+- [ ] **Create Modular Training Infrastructure Foundation** - Build `training_setup/` module with focused infrastructure components: `FitnessStats` for performance tracking, `EvolutionConfig` for training parameters, `TrainingStats` for iteration management, `Population<G>` for genome storage and lifecycle, and `GeneticOperators<M, C>` for reproduction pipeline encapsulation
+- [ ] **Implement Population Management Component** - Create `Population<G>` struct with genome storage (`Vec<G>`), size management, template-based initialization using mutation for diversity, population replacement strategies, and validation methods ensuring population consistency and proper memory allocation
+- [ ] **Build Genetic Operations Manager** - Design `GeneticOperators<M, C>` component encapsulating mutation/crossover operators with their rates, reproduction pipeline orchestration, offspring generation with configurable probabilities, and input validation for genetic operator parameters
+- [ ] **Create Training Statistics and Configuration System** - Implement `TrainingStats` with iteration tracking and convergence detection, `FitnessStats` with best/average/worst fitness and history management, and `EvolutionConfig` with generation limits, convergence thresholds, and stagnation detection parameters
+- [ ] **Design Simplified Evolutionary Trainer Architecture** - Create `EvolutionaryTrainer<G, F, S>` using composed infrastructure components, delegating population management to `Population`, genetic operations to `GeneticOperators`, and statistics tracking to dedicated stats components, maintaining clean separation of concerns
+- [ ] **Implement Sequential Fitness Evaluation Pipeline** - Build population-wide fitness assessment delegating to `Population` for genome access, implementing sequential evaluation with trait objects, fitness result collection in `FitnessStats`, and essential error handling for evaluation failures
+- [ ] **Build Trait-Generic Selection and Reproduction System** - Implement parent selection using polymorphic `Selection` trait dispatch, offspring generation through `GeneticOperators` delegation, simple elitism preservation, and handling edge cases like identical fitness values
+- [ ] **Create Generation Loop Orchestration** - Build main evolutionary coordinator with termination criteria using `EvolutionConfig`, progress tracking via `TrainingStats`, (μ + λ) population replacement through `Population` methods, and convergence detection with stagnation monitoring
+- [ ] **Implement Generic Trainer Trait Integration** - Connect evolutionary trainer to unified training framework through standardized `Trainer` trait interface, enabling trait-based interchangeability with future SGD, NEAT, and other optimization implementations while maintaining modular architecture
+- [ ] **Create MVP Integration Test Suite** - Build end-to-end validation testing complete modular pipeline instantiation (`FixedTopologyGenome + TaskBasedFitness + TournamentSelection`) with component isolation testing, architectural validation, basic convergence verification, and functional correctness validation
 
-> **Goal**: Build a simple, fully generic, trait-based evolutionary optimization engine MVP that can evolve any `Genome` implementation using any `Fitness` function and `Selection` strategy. This foundational system will demonstrate genuine evolutionary learning on the PowersOfTwo task while remaining completely modular and pluggable, serving as the core engine for future performance optimizations, parallelization, and advanced features.
+> **Goal**: Build a simple, fully generic, trait-based evolutionary optimization engine MVP using clean architectural separation. The system will demonstrate genuine evolutionary learning on the PowersOfTwo task while maintaining complete modularity through composed infrastructure components. This foundation serves as the core engine for future performance optimizations, parallelization, and advanced features across all 10 milestones.
 
 ---
 
@@ -260,8 +260,7 @@ The configuration system embodies Vynapse's core philosophy:
 - [x] Add matrix-vector multiplication for neural network forward pass
 - [x] Implement tensor reshaping and transposition operations
 
-### Part B: Evolutionary Building Blocks
-
+### Part B.1: Evolutionary Building Blocks
 - [x] Define core traits: `Genome`, `Fitness`, `Selection`, `Task`, `Loss`, `Activation`
 - [x] Implement `FixedTopologyGenome` with flat weight storage
 - [x] Create `Gaussian` and `Uniform` mutation operators
@@ -273,15 +272,23 @@ The configuration system embodies Vynapse's core philosophy:
 - [ ] Update `FixedTopologyGenome` to use external genetic operators inside the trainer
 - [x] Implement `GaussianMutation`, `UniformCrossover` as separate components
 
-### Part C: Population Evolution Loop
+### Part B.2: Immediate Refactoring
+- [ ] Create `training_setup/` module with focused infrastructure components
+- [ ] Implement `FitnessStats` struct with best/average/worst fitness and history tracking
+- [ ] Create `EvolutionConfig` struct with generations, convergence threshold, and stagnation settings
+- [ ] Build `TrainingStats` struct with iteration tracking and convergence status management
+- [ ] Implement `Population<G>` struct with genome storage, size management, and initialization
+- [ ] Create `GeneticOperators<M, C>` struct with mutation/crossover operators and their rates
+- [ ] Refactor existing code to use the new modular architecture
 
-- [ ] Create `EvolutionaryTrainer<G, F, S, M, C>` with generic type parameters
-- [ ] Implement population initialization from genome template
-- [ ] Build fitness evaluation pipeline with parallel population assessment
-- [ ] Create parent selection using configured strategy
-- [ ] Implement offspring generation with crossover and mutation
-- [ ] Add (μ + λ) population replacement strategy
-- [ ] Build generation loop with convergence detection
+### Part C: Population Evolution Loop
+- [ ] Create simplified `EvolutionaryTrainer<G, F, S>` using composed infrastructure components
+- [ ] Implement training loop orchestration delegating to `Population` and `GeneticOperators`
+- [ ] Build fitness evaluation pipeline with population-wide assessment
+- [ ] Create parent selection pipeline using configured strategy
+- [ ] Implement offspring generation delegating to genetic operators
+- [ ] Add (μ + λ) population replacement strategy via `Population` methods
+- [ ] Build generation loop with convergence detection using `TrainingStats`
 
 ### Part D: Observable Training
 
