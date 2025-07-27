@@ -7,6 +7,7 @@ pub struct TrainingStats {
     best_fitness: f32,
     average_fitness: f32,
     worst_fitness: f32,
+    fitness_history: Vec<f32>,
     convergence_status: ConvergenceStatus,
     elapsed_time: Duration,
 }
@@ -26,6 +27,7 @@ impl TrainingStats {
         best_fitness: f32,
         average_fitness: f32,
         worst_fitness: f32,
+        fitness_history: Vec<f32>,
         convergence_status: ConvergenceStatus,
         elapsed_time: Duration,
     ) -> Result<Self> {
@@ -38,6 +40,7 @@ impl TrainingStats {
             best_fitness,
             average_fitness,
             worst_fitness,
+            fitness_history,
             convergence_status,
             elapsed_time,
         })
@@ -64,6 +67,11 @@ impl TrainingStats {
         Ok(())
     }
 
+    pub fn add_fitness_to_history(&mut self, fitness: f32) -> Result<()> {
+        self.fitness_history.push(fitness);
+        Ok(())
+    }
+
     pub fn set_convergence_status(&mut self, status: ConvergenceStatus) -> Result<()> {
         self.convergence_status = status;
         Ok(())
@@ -71,6 +79,12 @@ impl TrainingStats {
 
     pub fn update_elapsed_time(&mut self, duration: Duration) -> Result<()> {
         self.elapsed_time = duration;
+        Ok(())
+    }
+
+    pub fn clear_fitness_history(&mut self) -> Result<()> {
+        let empty_history: Vec<f32> = Vec::new();
+        self.fitness_history = empty_history;
         Ok(())
     }
 
@@ -88,6 +102,10 @@ impl TrainingStats {
 
     pub fn get_worst_fitness(&self) -> f32 {
         self.worst_fitness
+    }
+
+    pub fn get_fitness_history(&self) -> Result<&Vec<f32>> {
+        Ok(&self.fitness_history)
     }
 
     pub fn get_convergence_status(&self) -> ConvergenceStatus {
