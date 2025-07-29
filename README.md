@@ -261,6 +261,7 @@ The configuration system embodies Vynapse's core philosophy:
 - [x] Implement tensor reshaping and transposition operations
 
 ### Part B.1: Evolutionary Building Blocks
+
 - [x] Define core traits: `Genome`, `Fitness`, `Selection`, `Task`, `Loss`, `Activation`
 - [x] Implement `FixedTopologyGenome` with flat weight storage
 - [x] Create `Gaussian` and `Uniform` mutation operators
@@ -273,15 +274,17 @@ The configuration system embodies Vynapse's core philosophy:
 - [x] Implement `GaussianMutation`, `UniformCrossover` as separate components
 
 ### Part B.2: Immediate Refactoring
-- [ ] Create `training_setup/` module with focused infrastructure components
-- [ ] Implement `FitnessStats` struct with best/average/worst fitness and history tracking
+
+- [x] Create `training_setup/` module with focused infrastructure components
+- [x] Implement `FitnessStats` struct with best/average/worst fitness and history tracking
+- [x] Build `TrainingStats` struct with iteration tracking and convergence status management
 - [ ] Create `EvolutionConfig` struct with generations, convergence threshold, and stagnation settings
-- [ ] Build `TrainingStats` struct with iteration tracking and convergence status management
 - [ ] Implement `Population<G>` struct with genome storage, size management, and initialization
 - [ ] Create `GeneticOperators<M, C>` struct with mutation/crossover operators and their rates
 - [ ] Refactor existing code to use the new modular architecture
 
 ### Part C: Population Evolution Loop
+
 - [ ] Create simplified `EvolutionaryTrainer<G, F, S>` using composed infrastructure components
 - [ ] Implement training loop orchestration delegating to `Population` and `GeneticOperators`
 - [ ] Build fitness evaluation pipeline with population-wide assessment
