@@ -49,6 +49,45 @@ impl FitnessStats {
         Ok(())
     }
 
+    pub fn reset(&mut self) -> Result<()> {
+        self.validate()?;
+        self.best_fitness = f32::NEG_INFINITY;
+        self.average_fitness = f32::NEG_INFINITY;
+        self.worst_fitness = f32::NEG_INFINITY;
+        self.fitness_history.clear();
+        self.current_generation_fitness.clear();
+        Ok(())
+    }
+
+    pub fn validate(&self) -> Result<()> {
+        if self.best_fitness.is_nan() {
+            return Err(VynapseError::EvolutionError(
+                "Best fitness cannot be NaN.".to_string(),
+            ));
+        }
+        if self.average_fitness.is_nan() {
+            return Err(VynapseError::EvolutionError(
+                "Average fitness cannot be NaN.".to_string(),
+            ));
+        }
+        if self.worst_fitness.is_nan() {
+            return Err(VynapseError::EvolutionError(
+                "Worst fitness cannot be NaN.".to_string(),
+            ));
+        }
+        if self.fitness_history.is_empty() {
+            return Err(VynapseError::EvolutionError(
+                "Fitness history cannot be empty.".to_string(),
+            ));
+        }
+        if self.current_generation_fitness.is_empty() {
+            return Err(VynapseError::EvolutionError(
+                "Current generation fitness cannot be empty.".to_string(),
+            ));
+        }
+        Ok(())
+    }
+
     pub fn calculate_best(&self, values: &[f32]) -> Result<f32> {
         let max = values.iter().copied().fold(f32::NEG_INFINITY, f32::max);
         Ok(max)

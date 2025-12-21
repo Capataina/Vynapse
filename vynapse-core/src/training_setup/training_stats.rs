@@ -110,6 +110,33 @@ impl TrainingStats {
         last > max_of_rest
     }
 
+    pub fn reset(&mut self, max_generations: u32, stagnation_limit: u32) -> Result<()> {
+        self.validate(max_generations, stagnation_limit)?;
+        self.fitness_stats = FitnessStats::new()?;
+        self.current_generation = 0;
+        self.max_generations = max_generations;
+        self.stagnation_limit = stagnation_limit;
+        self.convergence_status = ConvergenceStatus::WaitingToStart;
+        self.starting_time = None;
+        self.elapsed_time = Duration::from_secs(0);
+        self.stagnation_counter = 0;
+        Ok(())
+    }
+
+    pub fn validate(&self, max_generations: u32, stagnation_limit: u32) -> Result<()> {
+        if self.max_generations <= 0 {
+            return Err(VynapseError::EvolutionError(
+                "Max generations cannot be less than 1.".to_string(),
+            ));
+        }
+        if self.stagnation_limit <= 0 {
+            return Err(VynapseError::EvolutionError(
+                "Stagnation limit cannot be less than 1.".to_string(),
+            ));
+        }
+        Ok(())
+    }
+
     pub fn get_best_fitness(&self) -> f32 {
         self.fitness_stats.get_best_fitness()
     }

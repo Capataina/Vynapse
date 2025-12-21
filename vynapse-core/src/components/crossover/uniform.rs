@@ -1,7 +1,7 @@
 use rand::{Rng, rng};
 use vynapse_common::{Result, VynapseError};
 
-use crate::traits::crossover::Crossover;
+use crate::traits::{crossover::Crossover, genome::Genome};
 
 #[derive(Debug, Clone)]
 pub struct UniformCrossover {
@@ -23,7 +23,7 @@ impl UniformCrossover {
 }
 
 impl Crossover for UniformCrossover {
-    fn crossover<G: crate::traits::genome::Genome>(&self, parent1: &G, parent2: &G) -> Result<G> {
+    fn crossover<G: Genome>(&self, parent1: &G, parent2: &G) -> Result<G> {
         let mut child = parent1.clone();
         let parent1_weights = parent1.get_weights();
         let parent2_weights = parent2.get_weights();
