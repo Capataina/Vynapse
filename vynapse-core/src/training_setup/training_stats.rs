@@ -111,7 +111,7 @@ impl TrainingStats {
     }
 
     pub fn reset(&mut self, max_generations: u32, stagnation_limit: u32) -> Result<()> {
-        self.validate(max_generations, stagnation_limit)?;
+        self.validate()?;
         self.fitness_stats = FitnessStats::new()?;
         self.current_generation = 0;
         self.max_generations = max_generations;
@@ -123,7 +123,7 @@ impl TrainingStats {
         Ok(())
     }
 
-    pub fn validate(&self, max_generations: u32, stagnation_limit: u32) -> Result<()> {
+    pub fn validate(&self) -> Result<()> {
         if self.max_generations <= 0 {
             return Err(VynapseError::EvolutionError(
                 "Max generations cannot be less than 1.".to_string(),

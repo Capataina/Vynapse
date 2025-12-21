@@ -148,10 +148,7 @@ where
         self.evolution_config.validate()?;
         self.population.validate()?;
         self.genetic_operators.validate()?;
-        self.training_stats.validate(
-            self.evolution_config.generations,
-            self.evolution_config.stagnation_limit,
-        )?;
+        self.training_stats.validate()?;
         Ok(())
     }
 }
